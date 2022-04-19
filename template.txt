@@ -1,0 +1,276 @@
+<?php
+namespace App\Exports;
+
+use DateTime;
+use Maatwebsite\Excel\Events\AfterSheet;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Concerns\WithPreCalculateFormulas;
+use Maatwebsite\Excel\Concerns\WithProperties;
+
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Shared\Font;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+
+class /* _NAME_ */  /* _NAME_END_ */ implements ShouldAutoSize, WithEvents, WithPreCalculateFormulas, WithProperties
+{
+    //_PROTECTEDS_
+    //_PROTECTEDS_END_
+    protected $data;
+
+    function __construct($data)
+    {
+        $this->data = $data;
+    }
+
+    public function registerEvents(): array
+    {
+        return [
+            AfterSheet::class => function(AfterSheet $event)
+            {
+                $font_path = public_path('fonts/');
+                Font::setTrueTypeFontPath($font_path);
+                Font::setAutoSizeMethod(Font::AUTOSIZE_METHOD_EXACT);
+                //_FONTS_
+                //_FONTS_END_
+                //_FILLS_
+                //_FILLS_END_
+                //_BORDERS_
+                //_BORDERS_END_
+                //_ALIGNS_
+                //_ALIGNS_END_
+                
+                $event->sheet->setTitle(substr($this->title, 0, 31)); // Title cannot exceed 31 chars
+                $currentRow = 1;
+
+                //_STARTCOL_
+                //_STARTCOL_END_
+                //_ENDCOL_
+                //_ENDCOL_END_
+
+                // $event->sheet
+                //         ->mergeCells("$startCol$currentRow:N$currentRow")
+                //         ->setCellValue("$startCol$currentRow",strtoupper($this->title).PHP_EOL.$this->subtitle)
+                //         ->getStyle("$startCol$currentRow:N$currentRow")->applyFromArray(array_merge(
+                //             $alignCenterTop,
+                //             $fontArial9bold
+                //         ));
+                // $currentRow += 2;
+                // $event->sheet
+                //         ->mergeCells("H$currentRow:I$currentRow")
+                //         ->setCellValue("H$currentRow","Date From: ".$this->data['start_date']." Till: ".$this->data['end_date'])
+                //         ->getStyle("H$currentRow:I$currentRow")->applyFromArray(array_merge(
+                //             $alignCenterTop,
+                //             $fontArial10
+                //         ));
+                
+                for($h = $startCol; $h <= $endCol; $h++) {
+                    $event->sheet->getColumnDimension($h)->setAutoSize(true);
+                }
+                $currentCol = $startCol;
+                //_HEADERS_
+                //_HEADERS_END_
+
+                // foreach ($headers as $header) {
+                //     switch ($currentCol) {
+                //         case 'A':
+                //         case 'C':
+                //         case 'D':
+                //         case 'E':
+                //         case 'F':
+                //         case 'P':
+                //             $event->sheet->mergeCells("$currentCol$currentRow:$currentCol".($currentRow + 1));
+                //         case 'B':
+                //             $event->sheet->getStyle("$currentCol$currentRow:$currentCol".($currentRow + 1))
+                //                         ->applyFromArray(array_merge(
+                //                             $alignCenterTop,
+                //                             $borderAllThin,
+                //                             $fontArial10,
+                //                         ));
+                //             break;
+                //         case 'G':
+                //         case 'N':
+                //             $event->sheet->mergeCells("$currentCol$currentRow:".($this->moveCol($currentCol,1)).($currentRow + 1));
+                //             $event->sheet->getStyle("$currentCol$currentRow:".($this->moveCol($currentCol,1)).($currentRow + 1))
+                //                         ->applyFromArray(array_merge(
+                //                             $alignCenterTop,
+                //                             $borderAllThin,
+                //                             $fontArial10,
+                //                         ));
+                //             break;
+                //         case 'L':
+                //             $event->sheet->mergeCells("$currentCol$currentRow:".($this->moveCol($currentCol,1)).($currentRow));
+                //             $event->sheet->getStyle("$currentCol$currentRow:".($this->moveCol($currentCol,1)).($currentRow + 1))
+                //                         ->applyFromArray(array_merge(
+                //                             $alignCenterTop,
+                //                             $borderAllThin,
+                //                             $fontArial10,
+                //                         ));
+                //             break;
+                //         case 'I':
+                //             $event->sheet->mergeCells("$currentCol$currentRow:".($this->moveCol($currentCol,2)).($currentRow));
+                //             $event->sheet->getStyle("$currentCol$currentRow:".($this->moveCol($currentCol,2)).($currentRow + 1))
+                //                         ->applyFromArray(array_merge(
+                //                             $alignCenterTop,
+                //                             $borderAllThin,
+                //                             $fontArial10,
+                //                         ));
+                //             break;
+                //     }
+                //     $event->sheet->setCellValue("$currentCol$currentRow",$header);
+
+                //     switch ($currentCol) {
+                //         case 'G':
+                //         case 'L':
+                //         case 'N':
+                //             $currentCol = $this->moveCol($currentCol,1);
+                //             break;
+                //         case 'I':
+                //             $currentCol = $this->moveCol($currentCol,2);
+                //             break;
+                //     }
+                //     $currentCol++;
+                // }
+
+                // $currentRow++;
+                // $currentCol = $startCol;
+                // foreach ($headers2 as $header) {
+                //     switch ($currentCol) {
+                //         case 'K':
+                //         case 'L':
+                //         case 'M':
+                //             $event->sheet->getStyle("$currentCol$currentRow")
+                //                         ->applyFromArray(array_merge(
+                //                             $borderAllThin
+                //                         ));
+                //             break;
+                //         case 'I':
+                //             $event->sheet->mergeCells("$currentCol$currentRow:".($this->moveCol($currentCol,1))."$currentRow");
+                //             $event->sheet->getStyle("$currentCol$currentRow:".($this->moveCol($currentCol,1))."$currentRow")
+                //                         ->applyFromArray(array_merge(
+                //                             $borderAllThin
+                //                         ));
+                //             break;
+                //     }
+                //     if($header) {
+                //         $event->sheet->setCellValue("$currentCol$currentRow",$header);
+                //     }
+
+                //     switch ($currentCol) {
+                //         case 'G':
+                //         case 'I':
+                //         case 'N':
+                //             $currentCol = $this->moveCol($currentCol,1);
+                //             break;
+                //     }
+                //     $currentCol++;
+                // }
+
+                // Table
+                $currentRow++;
+                $tableStart = $currentRow;
+
+                foreach ($this->data['table'] as $n => $data)
+                {
+                    $currentCol = $startCol;
+                    
+                    //_TABLEDATA_
+
+                    $currentRow++;
+                }
+
+                $tableEnd = $currentRow-1;
+
+                // Total
+                // $event->sheet->setCellValue("I$currentRow", "=sum(I$tableStart:I$tableEnd)");
+                // $event->sheet->setCellValue("L$currentRow", "=sum(L$tableStart:L$tableEnd)");
+
+                // Style for Total
+                // for ($col = $startCol; $col <= $endCol; $col++) {
+                //     switch ($col) {
+                //         case 'G':
+                //         case 'I':
+                //         case 'N':
+                //             $event->sheet->mergeCells("$col$currentRow:".($this->moveCol($col,1))."$currentRow")
+                //                         ->getStyle("$col$currentRow:".($this->moveCol($col,1))."$currentRow")
+                //                         ->applyFromArray(array_merge(
+                //                             $borderAllThin
+                //                         ));
+                //             $col++;
+                //             break;
+                //         default:
+                //             $event->sheet->getStyle("$col$currentRow")->applyFromArray(array_merge(
+                //                 $borderAllThin
+                //             ));
+                //     };
+                // }
+
+                // Summary
+
+                // Style for Header
+                //_FREEZE_
+                //_FREEZE_END_
+
+                // $event->sheet->getStyle($startCol.($tableStart-2).":$endCol".($tableStart-1))->applyFromArray(array_merge(
+                //     $fontArial10,
+                //     $alignCenterTop
+                // ));
+
+                //_SETWIDTH_
+                //_SETWIDTH_END_
+
+                //_SETHEIGHT_
+                //_SETHEIGHT_END_
+
+                // Style for Table
+                // $event->sheet->getStyle("$startCol$tableStart:$endCol".($tableEnd+1))->applyFromArray(array_merge(
+                //     $fontArial10,
+                //     $alignCenter
+                // ));
+                // $event->sheet->getStyle("G$tableStart:H".($tableEnd+1))->applyFromArray(array_merge(
+                //     $fontArial10,
+                //     $alignLeft
+                // ));
+                // $event->sheet->getStyle("N$tableStart:O".($tableEnd+1))->applyFromArray(array_merge(
+                //     $fontArial10,
+                //     $alignLeft
+                // ));
+
+                // Set Format
+                // $event->sheet->formatColumn("A$tableStart:A$tableEnd", 'dd-mmm-yy');
+                // $event->sheet->formatColumn("E$tableStart:E$tableEnd", 'dd-mmm-yy');
+                // $event->sheet->formatColumn("I$tableStart:K".($tableEnd+1), '0;(0)');
+                // $event->sheet->formatColumn("L$tableStart:L".($tableEnd+1), '#,##0.00;-#,##0.00');
+                // $event->sheet->formatColumn("M$tableStart:M$tableEnd", '0;(0)');
+            },
+        ];
+    }
+
+    public function properties(): array
+    {
+        return [
+            'creator'        => auth()->user()->name,
+            'lastModifiedBy' => auth()->user()->name,
+            'title'          => $this->title,
+            'keywords'       => 'report,export,acc,ccd',
+            'category'       => 'Report',
+            'company'        => $this->company,
+        ];
+    }
+
+    private function parseEmptyValue($value)
+    {
+        if (!$value) {
+            return 0;
+        }
+        return $value;
+    }
+
+    private function moveCol($currentCol, $value)
+    {
+        return (chr(ord($currentCol)+$value));
+    }
+}

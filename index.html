@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laravel Excel - Export Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="col-10 m-auto">
+        <form id="form" action="generator.php" method="post">
+            <div class="mb-3">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" class="form-control" name="name" id="name">
+            </div>
+            <div class="control-group mb-3" id="protected">
+                <label class="control-label" for="field1">Protected</label>
+                <div class="controls dynamic" id="protected-elem"> 
+                    <div class="entry input-group col-xs-3">
+                        <input type="text" class="form-control" name="protected[]" placeholder="Protected" aria-label="Protected" value="company" readonly>
+                        <span class="input-group-text">:</span>
+                        <input type="text" class="form-control" name="protectedVal[]" placeholder="Value" aria-label="Value" value="Sara Worldwide Vacations Berhad">
+                    </div>
+                    <div class="entry input-group col-xs-3">
+                        <input type="text" class="form-control" name="protected[]" placeholder="Protected" aria-label="Protected" value="title" readonly>
+                        <span class="input-group-text">:</span>
+                        <input type="text" class="form-control" name="protectedVal[]" placeholder="Value" aria-label="Value" id="title" value="Report">
+                    </div>
+                    <div class="entry input-group col-xs-3">
+                        <input type="text" class="form-control" name="protected[]" placeholder="Protected" aria-label="Protected">
+                        <span class="input-group-text">:</span>
+                        <input type="text" class="form-control" name="protectedVal[]" placeholder="Value" aria-label="Value">
+                        <span class="input-group-btn">
+                            <button class="btn btn-success btn-add" data-id="protected-elem" type="button">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="control-group mb-3" id="fonts">
+                <label class="control-label" for="field1">Fonts</label>
+                <div class="controls dynamic" id="fonts-elem"> 
+                    <div class="entry input-group col-xs-3">
+                        <div class="input-group-text">
+                            <input class="form-check-input mt-0" type="checkbox" name="fontBold[]" aria-label="Checkbox for following text input">
+                            <label class="control-label" for="fontBold[]">Bold</label>
+                        </div>
+                        <div class="input-group-text">
+                            <input class="form-check-input mt-0" type="checkbox" name="fontUnderline[]" aria-label="Checkbox for following text input">
+                            <label class="control-label" for="fontUnderline[]">Underline</label>
+                        </div>
+                        <select class="form-select" name="fontName[]">
+                            <option value="Arial" selected>Arial</option>
+                            <option value="Calibri">Calibri</option>
+                            <option value="Tahoma">Tahoma</option>
+                            <option value="Times New Roman">Times New Roman</option>
+                            <option value="Verdana">Verdana</option>
+                        </select>
+                        <span class="input-group-text">Size:</span>
+                        <input type="number" class="form-control" name="fontSize[]" placeholder="Size" aria-label="Size">
+                        <span class="input-group-text">Color:</span>
+                        <input type="color" class="form-control h-auto" name="fontColor[]" placeholder="Color" aria-label="Color">
+                        <span class="input-group-btn">
+                            <button class="btn btn-success btn-add" data-id="fonts-elem" type="button">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="control-group mb-3" id="fills">
+                <label class="control-label" for="field1">Fills</label>
+                <div class="controls dynamic" id="fills-elem"> 
+                    <div class="entry input-group col-xs-3">
+                        <span class="input-group-text">Type:</span>
+                        <select class="form-select" name="fillType[]">
+                            <option value="none" selected>NONE</option>
+                            <option value="solid">SOLID</option>
+                        </select>
+                        <span class="input-group-text">Color:</span>
+                        <input type="color" class="form-control h-auto" name="fillColor[]" value="#FFFFFF" placeholder="Color" aria-label="Color">
+                        <span class="input-group-btn">
+                            <button class="btn btn-success btn-add" data-id="fills-elem" type="button">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="control-group mb-3" id="borders">
+                <label class="control-label" for="field1">Borders</label>
+                <div class="controls dynamic" id="borders-elem"> 
+                    <div class="entry input-group ">
+                        <div class="input-group ">
+                            <span class="input-group-text">Top:</span>
+                            <select class="form-select" name="borderTopStyles[]">
+                                <option value="none" selected>NONE</option>
+                                <option value="thin">THIN</option>
+                                <option value="bold">BOLD</option>
+                                <option value="medium">MEDIUM</option>
+                                <option value="thick">THICK</option>
+                                <option value="double">DOUBLE</option>
+                            </select>
+                            <input type="color" class="form-control h-auto" name="borderTopColors[]" placeholder="Color" aria-label="Color">
+                            <span class="input-group-text">Bottom:</span>
+                            <select class="form-select" name="borderBottomStyles[]">
+                                <option value="none" selected>NONE</option>
+                                <option value="thin">THIN</option>
+                                <option value="bold">BOLD</option>
+                                <option value="medium">MEDIUM</option>
+                                <option value="thick">THICK</option>
+                                <option value="double">DOUBLE</option>
+                            </select>
+                            <input type="color" class="form-control h-auto" name="borderBottomColors[]" placeholder="Color" aria-label="Color">
+                            <span class="input-group-text">Left:</span>
+                            <select class="form-select" name="borderLeftStyles[]">
+                                <option value="none" selected>NONE</option>
+                                <option value="thin">THIN</option>
+                                <option value="bold">BOLD</option>
+                                <option value="medium">MEDIUM</option>
+                                <option value="thick">THICK</option>
+                                <option value="double">DOUBLE</option>
+                            </select>
+                            <input type="color" class="form-control h-auto" name="borderLeftColors[]" placeholder="Color" aria-label="Color">
+                            <span class="input-group-text">Right:</span>
+                            <select class="form-select" name="borderRightStyles[]">
+                                <option value="none" selected>NONE</option>
+                                <option value="thin">THIN</option>
+                                <option value="bold">BOLD</option>
+                                <option value="medium">MEDIUM</option>
+                                <option value="thick">THICK</option>
+                                <option value="double">DOUBLE</option>
+                            </select>
+                            <input type="color" class="form-control h-auto" name="borderRightColors[]" placeholder="Color" aria-label="Color">
+                            <button class="btn btn-success btn-add input-group-btn" data-id="borders-elem" type="button">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="control-group mb-3" id="aligns">
+                <label class="control-label" for="field1">Aligns</label>
+                <div class="controls dynamic" id="aligns-elem"> 
+                    <div class="entry input-group ">
+                        <div class="input-group ">
+                            <span class="input-group-text">Horizontal:</span>
+                            <select class="form-select" name="horizontalAligns[]">
+                                <option value="left" selected>LEFT</option>
+                                <option value="right">RIGHT</option>
+                                <option value="center">CENTER</option>
+                                <option value="justify">JUSTIFY</option>
+                            </select>
+                            <span class="input-group-text">Vertical:</span>
+                            <select class="form-select" name="verticalAligns[]">
+                                <option value="center" selected>CENTER</option>
+                                <option value="top">TOP</option>
+                                <option value="bottom">BOTTOM</option>
+                                <option value="justify">JUSTIFY</option>
+                            </select>
+                            <button class="btn btn-success btn-add input-group-btn" data-id="aligns-elem" type="button">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <div class="col">
+                    <label for="startCol" class="form-label">StartCol</label>
+                    <input type="text" class="form-control" name="startCol" aria-label="startCol">
+                </div>
+                <div class="col">
+                    <label for="endCol" class="form-label">EndCol</label>
+                    <input type="text" class="form-control" name="endCol" aria-label="endCol">
+                </div>
+            </div>
+            <div class="control-group mb-3" id="headers">
+                <label class="control-label" for="field1">Headers</label>
+                <div class="controls dynamic" id="headers-elem"> 
+                    <div class="entry input-group ">
+                        <div class="input-group ">
+                            <input type="text" class="form-control" name="headers[]" placeholder="Header" aria-label="Header">
+                            <button class="btn btn-success btn-add input-group-btn" data-id="headers-elem" type="button">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="control-group mb-3" id="widths">
+                <label class="control-label" for="field1">Widths</label>
+                <div class="controls dynamic" id="widths-elem"> 
+                    <div class="entry input-group col-xs-3">
+                        <span class="input-group-text">Col:</span>
+                        <input type="text" class="form-control" name="widthCols[]" placeholder="Col" aria-label="Col">
+                        <span class="input-group-text">Width:</span>
+                        <input type="number" value="0" step="0.01" class="form-control" name="widths[]" placeholder="Width" aria-label="Width">
+                        <span class="input-group-btn">
+                            <button class="btn btn-success btn-add" data-id="widths-elem" type="button">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="control-group mb-3" id="heights">
+                <label class="control-label" for="field1">Heights</label>
+                <div class="controls dynamic" id="heights-elem"> 
+                    <div class="entry input-group col-xs-3">
+                        <span class="input-group-text">Row:</span>
+                        <input type="number" class="form-control" name="heightRows[]" placeholder="Row" aria-label="Row">
+                        <span class="input-group-text">Height:</span>
+                        <input type="number" value="0" step="0.01" class="form-control" name="heights[]" placeholder="Height" aria-label="Height">
+                        <span class="input-group-btn">
+                            <button class="btn btn-success btn-add" data-id="heights-elem" type="button">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="freeze" class="form-label">Freeze</label>
+                <input type="text" class="form-control" name="freeze" aria-label="freeze">
+            </div>
+            <div class="mb-3">
+                <label for="resultCode" class="form-label">Generated Code</label>
+                <textarea class="form-control" name="resultCode" id="resultCode" cols="30" rows="10"></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="routeCode" class="form-label">Route Code</label>
+                <div class="control-group input-group" id="protected">
+                    <textarea class="form-control" name="routeCode" id="routeCode" cols="30" rows="3"></textarea>
+                    <button class="btn btn-primary btn-copy input-group-btn" type="button">
+                        <i class="fas fa-clipboard"></i>
+                    </button>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Generate</button>
+        </form>
+        <div id="snackbar">Copied.</div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="app.js"></script>
+</body>
+</html>
