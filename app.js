@@ -364,7 +364,7 @@ function onBorderChanged() {
                     +"'borderStyle' => Border::BORDER_"+borderStyle[count].toUpperCase()+",\n"
                     +(" ".repeat($tabs+12))
                     +"'color' => ['rgb' => '"+borderColor[count].toUpperCase()
-                    +"'],\n";
+                    +"'],\n"
                     +(" ".repeat($tabs+8))
                     +"],\n";
             }
