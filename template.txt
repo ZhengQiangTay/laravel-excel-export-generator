@@ -8,6 +8,7 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithPreCalculateFormulas;
 use Maatwebsite\Excel\Concerns\WithProperties;
 
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Shared\Font;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
@@ -31,9 +32,9 @@ class /* _NAME_ */  /* _NAME_END_ */ implements ShouldAutoSize, WithEvents, With
         return [
             AfterSheet::class => function(AfterSheet $event)
             {
-                $font_path = public_path('fonts/');
-                Font::setTrueTypeFontPath($font_path);
-                Font::setAutoSizeMethod(Font::AUTOSIZE_METHOD_EXACT);
+                // $font_path = public_path('fonts/');
+                // Font::setTrueTypeFontPath($font_path);
+                // Font::setAutoSizeMethod(Font::AUTOSIZE_METHOD_EXACT);
                 //_FONTS_
                 //_FONTS_END_
                 //_FILLS_
@@ -50,24 +51,33 @@ class /* _NAME_ */  /* _NAME_END_ */ implements ShouldAutoSize, WithEvents, With
                 //_STARTCOL_END_
                 //_ENDCOL_
                 //_ENDCOL_END_
-
-                // $event->sheet
-                //         ->mergeCells("$startCol$currentRow:N$currentRow")
-                //         ->setCellValue("$startCol$currentRow",strtoupper($this->title).PHP_EOL.$this->subtitle)
-                //         ->getStyle("$startCol$currentRow:N$currentRow")->applyFromArray(array_merge(
-                //             $alignCenterTop,
-                //             $fontArial9bold
-                //         ));
-                // $currentRow += 2;
-                // $event->sheet
-                //         ->mergeCells("H$currentRow:I$currentRow")
-                //         ->setCellValue("H$currentRow","Date From: ".$this->data['start_date']." Till: ".$this->data['end_date'])
-                //         ->getStyle("H$currentRow:I$currentRow")->applyFromArray(array_merge(
-                //             $alignCenterTop,
-                //             $fontArial10
-                //         ));
                 
-                for($h = $startCol; $h <= $endCol; $h++) {
+                // $event->sheet
+                //         ->mergeCells("$startCol$currentRow:$endCol$currentRow")
+                //         ->setCellValue("$startCol$currentRow",$this->company)
+                //         ->getStyle("$startCol$currentRow:$endCol$currentRow")->applyFromArray(array_merge(
+                //             $alignCenterCenter,
+                //             $fontCalibri11bold
+                //         ));
+                // $currentRow ++;
+                // $event->sheet
+                //         ->mergeCells("$startCol$currentRow:$endCol$currentRow")
+                //         ->setCellValue("$startCol$currentRow",$this->title)
+                //         ->getStyle("$startCol$currentRow:$endCol$currentRow")->applyFromArray(array_merge(
+                //             $alignCenterCenter,
+                //             $fontCalibri11bold
+                //         ));
+                // $currentRow ++;
+                // $event->sheet
+                //         ->mergeCells("$startCol$currentRow:$endCol$currentRow")
+                //         ->setCellValue("$startCol$currentRow",$club)
+                //         ->getStyle("$startCol$currentRow:$endCol$currentRow")->applyFromArray(array_merge(
+                //             $alignCenterCenter,
+                //             $fontCalibri11bold
+                //         ));
+                // $currentRow ++;
+                
+                for($h = $startCol; Coordinate::columnIndexFromString($h) <= Coordinate::columnIndexFromString($endCol); $h = $this->moveCol($h,1)) {
                     $event->sheet->getColumnDimension($h)->setAutoSize(true);
                 }
                 $currentCol = $startCol;
@@ -75,97 +85,11 @@ class /* _NAME_ */  /* _NAME_END_ */ implements ShouldAutoSize, WithEvents, With
                 //_HEADERS_END_
 
                 // foreach ($headers as $header) {
-                //     switch ($currentCol) {
-                //         case 'A':
-                //         case 'C':
-                //         case 'D':
-                //         case 'E':
-                //         case 'F':
-                //         case 'P':
-                //             $event->sheet->mergeCells("$currentCol$currentRow:$currentCol".($currentRow + 1));
-                //         case 'B':
-                //             $event->sheet->getStyle("$currentCol$currentRow:$currentCol".($currentRow + 1))
-                //                         ->applyFromArray(array_merge(
-                //                             $alignCenterTop,
-                //                             $borderAllThin,
-                //                             $fontArial10,
-                //                         ));
-                //             break;
-                //         case 'G':
-                //         case 'N':
-                //             $event->sheet->mergeCells("$currentCol$currentRow:".($this->moveCol($currentCol,1)).($currentRow + 1));
-                //             $event->sheet->getStyle("$currentCol$currentRow:".($this->moveCol($currentCol,1)).($currentRow + 1))
-                //                         ->applyFromArray(array_merge(
-                //                             $alignCenterTop,
-                //                             $borderAllThin,
-                //                             $fontArial10,
-                //                         ));
-                //             break;
-                //         case 'L':
-                //             $event->sheet->mergeCells("$currentCol$currentRow:".($this->moveCol($currentCol,1)).($currentRow));
-                //             $event->sheet->getStyle("$currentCol$currentRow:".($this->moveCol($currentCol,1)).($currentRow + 1))
-                //                         ->applyFromArray(array_merge(
-                //                             $alignCenterTop,
-                //                             $borderAllThin,
-                //                             $fontArial10,
-                //                         ));
-                //             break;
-                //         case 'I':
-                //             $event->sheet->mergeCells("$currentCol$currentRow:".($this->moveCol($currentCol,2)).($currentRow));
-                //             $event->sheet->getStyle("$currentCol$currentRow:".($this->moveCol($currentCol,2)).($currentRow + 1))
-                //                         ->applyFromArray(array_merge(
-                //                             $alignCenterTop,
-                //                             $borderAllThin,
-                //                             $fontArial10,
-                //                         ));
-                //             break;
-                //     }
-                //     $event->sheet->setCellValue("$currentCol$currentRow",$header);
-
-                //     switch ($currentCol) {
-                //         case 'G':
-                //         case 'L':
-                //         case 'N':
-                //             $currentCol = $this->moveCol($currentCol,1);
-                //             break;
-                //         case 'I':
-                //             $currentCol = $this->moveCol($currentCol,2);
-                //             break;
-                //     }
-                //     $currentCol++;
-                // }
-
-                // $currentRow++;
-                // $currentCol = $startCol;
-                // foreach ($headers2 as $header) {
-                //     switch ($currentCol) {
-                //         case 'K':
-                //         case 'L':
-                //         case 'M':
-                //             $event->sheet->getStyle("$currentCol$currentRow")
-                //                         ->applyFromArray(array_merge(
-                //                             $borderAllThin
-                //                         ));
-                //             break;
-                //         case 'I':
-                //             $event->sheet->mergeCells("$currentCol$currentRow:".($this->moveCol($currentCol,1))."$currentRow");
-                //             $event->sheet->getStyle("$currentCol$currentRow:".($this->moveCol($currentCol,1))."$currentRow")
-                //                         ->applyFromArray(array_merge(
-                //                             $borderAllThin
-                //                         ));
-                //             break;
-                //     }
-                //     if($header) {
-                //         $event->sheet->setCellValue("$currentCol$currentRow",$header);
-                //     }
-
-                //     switch ($currentCol) {
-                //         case 'G':
-                //         case 'I':
-                //         case 'N':
-                //             $currentCol = $this->moveCol($currentCol,1);
-                //             break;
-                //     }
+                //     $event->sheet->setCellValue("$currentCol$currentRow",$header)
+                //                     ->getStyle("$currentCol$currentRow")
+                                    // ->applyFromArray(array_merge(
+                                    //     $borderAllThin
+                                    // ));
                 //     $currentCol++;
                 // }
 
@@ -226,9 +150,9 @@ class /* _NAME_ */  /* _NAME_END_ */ implements ShouldAutoSize, WithEvents, With
                 //_SETHEIGHT_END_
 
                 // Style for Table
-                // $event->sheet->getStyle("$startCol$tableStart:$endCol".($tableEnd+1))->applyFromArray(array_merge(
-                //     $fontArial10,
-                //     $alignCenter
+                // $event->sheet->getStyle("$startCol$tableStart:$endCol$tableEnd")->applyFromArray(array_merge(
+                //     $fontArial9,
+                //     $alignCenterCenter
                 // ));
                 // $event->sheet->getStyle("G$tableStart:H".($tableEnd+1))->applyFromArray(array_merge(
                 //     $fontArial10,
@@ -255,7 +179,7 @@ class /* _NAME_ */  /* _NAME_END_ */ implements ShouldAutoSize, WithEvents, With
             'creator'        => auth()->user()->name,
             'lastModifiedBy' => auth()->user()->name,
             'title'          => $this->title,
-            'keywords'       => 'report,export,acc,ccd',
+            'keywords'       => 'report,export,rmrd',
             'category'       => 'Report',
             'company'        => $this->company,
         ];
@@ -271,6 +195,8 @@ class /* _NAME_ */  /* _NAME_END_ */ implements ShouldAutoSize, WithEvents, With
 
     private function moveCol($currentCol, $value)
     {
-        return (chr(ord($currentCol)+$value));
+        $ord = Coordinate::columnIndexFromString($currentCol)+$value;
+        $chr = Coordinate::stringFromColumnIndex($ord);
+        return $chr;
     }
 }
