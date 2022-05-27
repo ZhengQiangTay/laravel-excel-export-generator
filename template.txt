@@ -164,6 +164,7 @@ class /* _NAME_ */  /* _NAME_END_ */ implements ShouldAutoSize, WithEvents, With
                 // ));
 
                 // Set Format
+                $event->sheet->setShowGridlines(false);
                 // $event->sheet->formatColumn("A$tableStart:A$tableEnd", 'dd-mmm-yy');
                 // $event->sheet->formatColumn("E$tableStart:E$tableEnd", 'dd-mmm-yy');
                 // $event->sheet->formatColumn("I$tableStart:K".($tableEnd+1), '0;(0)');
