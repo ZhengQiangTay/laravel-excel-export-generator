@@ -1,0 +1,161 @@
+@php
+    use Carbon\Carbon;
+
+    function parseAmount($amount) {
+        if (!$amount || $amount == 0)
+            return '-';
+        return number_format($amount, 2);
+    }
+@endphp
+<x-app-layout>
+    <x-slot name="breadcrumbs">
+        {{ Breadcrumbs::render('_short-name_') }}
+    </x-slot>
+
+    <x-slot name="header">
+        {{-- <h2 class="font-semibold text-xl text-gray-800 leading-tight"> --}}
+        {{ __('_full-name_') }}
+        {{-- </h2> --}}
+    </x-slot>
+
+    <section>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <x-card.title>
+                        {{ __('_full-name_') }}
+                        @if ($excel)
+                        <x-button.header class="float-right" href="{{ $excel }}">
+                            <i class="bx bx-download "></i>
+                            Excel
+                        </x-button.header>
+                        @endif
+                    </x-card.title>
+
+                    <div class="card-content">
+                        <div class="card-body card-dashboard">
+
+                            <div class="row mt-1">
+                                <div id="filter-date" class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-6 form-group ">
+                                            {!! Form::label('startDate', 'Date Started') !!}
+                                            {!! Form::date('startDate', app('request')->input('startDate') ? app('request')->input('startDate') : now()->startOfMonth(), ['class' => 'form-control date-input', 'max' => now()->format('Y-m-d')]) !!}
+                                        </div>
+                                        <div class="col-md-6 form-group ">
+                                            {!! Form::label('endDate', 'Date Ended') !!}
+                                            {!! Form::date('endDate', (app('request')->input('endDate') >= app('request')->input('startDate') && app('request')->input('startDate')) ? app('request')->input('endDate') : (app('request')->input('startDate') ?? now()->endOfMonth()), ['class' => 'form-control date-input', 'min' => (app('request')->input('startDate') ?? now()->startOfMonth()->format('Y-m-d'))]) !!}
+                                            <div class="invalid-feedback">End date must be greater than start date</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 form-group">
+                                    {!! Form::label('club', 'Club') !!}
+                                    {!! Form::select('club', ['All' => 'All', 'CAI' => 'CAI', 'EVC' => 'EVC', 'Staff' => 'Staff', 'Others' => 'Others'], app('request')->input('club') ?? 'All', ['class' => 'select2 form-control']) !!}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                </div>
+                                <div class="col-md-6 mt-2">
+                                    {!! Form::submit('Generate Report', ['class' => 'col-6 btn btn-outline-primary round mr-1 mb-1 float-right', 'onclick' => 'generate(); return false;']) !!}
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="card-dashboard">
+                                <x-table.table class="mt-1">
+                                    <x-table.header.index>
+                                            @php
+                                                $headers = [];
+                                            @endphp
+                                            @foreach ($headers as $header)
+                                                <x-table.header.text> {{ $header }}
+                                                </x-table.header.text>
+                                            @endforeach
+                                    </x-table.header.index>
+                                    <tbody>
+                                    </tbody>
+                                </x-table.table>
+                                @if (count($data) > 0)
+                                    <div class="text-center">
+                                        <ul class="list-inline small text-muted">
+                                            <li>
+                                                Page {{ $data->currentPage() }} of
+                                                {{ $data->lastPage() }}, showing
+                                                {{ $data->lastItem() - $data->firstItem() + 1 }}
+                                                records out of {{ $data->total() }} total,
+                                                starting on record {{ $data->firstItem() }}, ending on
+                                                {{ $data->lastItem() }}
+                                            </li>
+                                        </ul>
+                                        {{ $data->appends(Request::except('page'))->links() }}
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    @section('page-scripts')
+        <script>
+            var startOfMonth = "{{ now()->startOfMonth()->format('Y-m-d') }}";
+            var endOfMonth = "{{ now()->endOfMonth()->format('Y-m-d') }}";
+
+            function generate() {
+                var route = '{{ route('_short-name_') }}';
+                var startDate = $('input[name="startDate"]').val();
+                var endDate = $('input[name="endDate"]').val();
+                var club = $('select[name="club"]').val();
+                route = route + '?startDate=' + startDate + '&endDate=' + endDate + '&club=' + club;
+
+                if ($('input[name="endDate"]').val() < $('input[name="startDate"]').val()) {
+                    $('input[name="endDate"]').addClass('is-invalid');
+                } else {
+                    window.location.href = route;
+                }
+            }
+
+            $(function() {
+                $(document).on('change', 'input[name="startDate"]', function() {
+                    var endDate = $('input[name="endDate"]');
+                    endDate.attr('min',$(this).val());
+                    if(!$(this).val()) {
+                        $(this).val(startOfMonth).change();
+                    }
+                    if(endDate.val() < $(this).val() && endDate.val()) {
+                        endDate.val($(this).val()).change();
+                    }
+                }).on('change', 'input[name="endDate"]', function() {
+                    $(this).removeClass('is-invalid');
+                    if(!$(this).val()) {
+                        $(this).val(endOfMonth).change();
+                    }
+                    var startDate = $('input[name="startDate"]');
+                    if($(this).val() < startDate.val() && $(this).val()) {
+                        $(this).val(startDate.val()).change();
+                    }
+                }).on('change', 'select[name="club"]', function() {
+                    if ($(this).val() == null) {
+                        $(this).val('All').change();
+                    }
+                })
+            })
+
+        </script>
+    @endsection
+
+</x-app-layout>
